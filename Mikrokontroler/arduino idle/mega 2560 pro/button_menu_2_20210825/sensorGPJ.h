@@ -240,7 +240,7 @@ void tambahNutrisi() {
     lcd.setCursor(0, 0);
     lcd.print("     [PPM :" + String(ppm) +"] ");
     lcd.setCursor(0, 1);
-    lcd.print("CEK ULANG 3 MNT LAGI");
+    lcd.print("CEK ULANG 5 MNT LAGI");
 
     for (int i = 1; i <= 300; i++) {
       lcd.setCursor(9, 3);
@@ -300,6 +300,9 @@ void cekAKTIF() {
   PHmeter = bacaPH();
   sensorT.requestTemperatures();
   S_Air   = sensorT.getTempCByIndex(0);
+  if (S_Air <= -200){
+      S_Air = 25;
+    }
   LUX     = S_cahaya.readLightLevel();
   humi    = dht.readHumidity();
   temp    = dht.readTemperature();

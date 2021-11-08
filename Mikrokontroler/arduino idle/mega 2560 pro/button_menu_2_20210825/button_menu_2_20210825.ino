@@ -135,33 +135,6 @@ void loop() {
 
 
   //update sensor Permenit (cahaya, kelembapan, suhu udara, suhu air)
-  if (millis() - W_cek1m >= 60000) {
-
-    //update cahaya
-    LUX = S_cahaya.readLightLevel();
-    //update kelembapan udara
-    humi = dht.readHumidity();
-    //update suhu udara
-    temp = dht.readTemperature();
-    //update suhu air
-    sensorT.requestTemperatures();
-    S_Air = sensorT.getTempCByIndex(0);
-
-    tone(buzLed, 900, 100);
-    W_cek1m = millis();
-
-    Serial3.println("up1m#" +
-                    String(Jam) + "#" +
-                    String(S_Air) + "#" +
-                    String(LUX) + "#" +
-                    String(humi) + "#" +
-                    String(temp));
-  }
-
-
-
-
-
   //PH dan ppm setiap 1 jam
   if ( now.hour() == W_cek1j) {
 
@@ -247,11 +220,31 @@ void loop() {
                     String(stokB) + "#" +
                     String(stokPhdown));
 
+    //update cahaya
+    LUX = S_cahaya.readLightLevel();
+    //update kelembapan udara
+    humi = dht.readHumidity();
+    //update suhu udara
+    temp = dht.readTemperature();
+    //update suhu air
+    sensorT.requestTemperatures();
+    S_Air = sensorT.getTempCByIndex(0);
+    if (S_Air <= -200){
+      S_Air = 25;
+    }
+
+    Serial3.println("up1m#" +
+                    String(Jam) + "#" +
+                    String(S_Air) + "#" +
+                    String(LUX) + "#" +
+                    String(humi) + "#" +
+                    String(temp));
+
+    tone(buzLed, 900, 100);
+
     W_cek1j = W_cek1j + 1;
     lampu = true;
   }
-
-
 
 
 
