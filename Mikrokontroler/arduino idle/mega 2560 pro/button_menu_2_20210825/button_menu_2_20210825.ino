@@ -223,6 +223,8 @@ void loop() {
                     String(stokB) + "#" +
                     String(stokPhdown));
 
+    delay(3000);
+    
     //update cahaya
     LUX = S_cahaya.readLightLevel();
     //update kelembapan udara

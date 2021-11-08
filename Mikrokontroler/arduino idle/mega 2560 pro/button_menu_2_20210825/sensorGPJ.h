@@ -331,6 +331,7 @@ void cekAKTIF() {
                   String(stokA) + "#" +
                   String(stokB) + "#" +
                   String(stokPhdown));
+   delay(2000);
 }
 
 
