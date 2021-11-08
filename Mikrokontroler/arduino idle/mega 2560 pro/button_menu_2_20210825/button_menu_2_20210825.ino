@@ -63,19 +63,18 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(TOK), pushTOK, FALLING);
   attachInterrupt(digitalPinToInterrupt(TN), pushTN, FALLING);
 
+  lcd.setCursor(0, 1);
+  lcd.print("   BETAPHONIK V1");
+  delay(2000);
+  
   while (isnan(dht.readHumidity()) or isnan(dht.readTemperature())) {
-    lcd.setCursor(0, 0);
-    lcd.print("     CEK DHT22");
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("     CEK SENSOR    ");
     delay(2000);
   }
 
-  cekAKTIF();
-
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("   MEMULAI PROGRAM");
-  delay(2000);
-  lcd.clear();
+  cekAKTIF();  
 
 }
 
@@ -137,6 +136,9 @@ void loop() {
   //update sensor Permenit (cahaya, kelembapan, suhu udara, suhu air)
   //PH dan ppm setiap 1 jam
   if ( now.hour() == W_cek1j) {
+    tone(buzLed, 500, 300);
+    delay(300);
+    tone(buzLed, 900, 700);
 
     lcd.backlight();
 
@@ -210,6 +212,7 @@ void loop() {
     stokB   = hitungStok('B'); delay(100);
     stokPhdown = hitungStok('C'); delay(100);
 
+    tone(buzLed, 900, 100);
     Serial3.println("up1jam#" +
                     String(Jam) + "#" +
                     String(ppm) + "#" +
@@ -233,14 +236,13 @@ void loop() {
       S_Air = 25;
     }
 
+    tone(buzLed, 900, 100);
     Serial3.println("up1m#" +
                     String(Jam) + "#" +
                     String(S_Air) + "#" +
                     String(LUX) + "#" +
                     String(humi) + "#" +
                     String(temp));
-
-    tone(buzLed, 900, 100);
 
     W_cek1j = W_cek1j + 1;
     lampu = true;
