@@ -194,15 +194,12 @@ void loop() {
 
       ppmStatus = "Ganti%20Air%20Nutrisi";
 
-    } else if (ppm <= ppmMin && S_Air <= 38 ) {
+    } else if (ppm <= ppmMin && ppm >= 100 && S_Air <= 38 && W_cek1j == jamOn ) {
       tambahNutrisi();
-
       ppmStatus = "Penambahan%20Nutrisi";
-
     } else if (ppm <= ppmMin && S_Air >= 38 ) {
       ppmStatus = "Suhu%20Air%20Lebih%20Dari%2038%20C";
     } else {
-
       ppmStatus = "PPM%20AMAN";
     }
 
