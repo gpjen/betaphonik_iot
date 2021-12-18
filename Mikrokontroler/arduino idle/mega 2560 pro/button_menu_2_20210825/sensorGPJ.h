@@ -96,7 +96,7 @@ int hitungjarak(char x) {
   Dur = pulseIn(E_Pin, HIGH);
   Ja = Dur / 58.2;
 
-  if (Ja > 2000 ){
+  if (Ja > 2000 ) {
     Ja = 0;
   }
 
@@ -204,41 +204,55 @@ void tambahNutrisi() {
 
   while (ppm <= ppmMin) {
     if (ppm < 500) {
-      tambahA = (Out_pumpA * 1000) * 4;
-      tambahB = (Out_pumpB * 1000) * 4;
-      digitalWrite(PumpA, HIGH); delay(tambahA);
-      digitalWrite(PumpA, LOW);delay(3000);
-      digitalWrite(PumpB, HIGH); delay(tambahB);
-      digitalWrite(PumpB, LOW);
+      Serial.println("ppm <= 500");
+      for (int i = 0; i <= 3; i++) {
+        tambahA = (Out_pumpA * 1000);
+        tambahB = (Out_pumpB * 1000);
+        digitalWrite(PumpA, HIGH); delay(tambahA);
+        digitalWrite(PumpA, LOW); delay(3000);
+        digitalWrite(PumpB, HIGH); delay(tambahB);
+        digitalWrite(PumpB, LOW); delay(3000);
+      }
 
     } else if (ppm < 700) {
-      tambahA = (Out_pumpA * 1000) * 3;
-      tambahB = (Out_pumpB * 1000) * 3;
-      digitalWrite(PumpA, HIGH); delay(tambahA);
-      digitalWrite(PumpA, LOW);delay(3000);
-      digitalWrite(PumpB, HIGH); delay(tambahB);
-      digitalWrite(PumpB, LOW);
+      for (int i = 0; i <= 2; i++) {
+        Serial.println("ppm <= 700");
+        tambahA = (Out_pumpA * 1000);
+        tambahB = (Out_pumpB * 1000);
+        digitalWrite(PumpA, HIGH); delay(tambahA);
+        digitalWrite(PumpA, LOW); delay(3000);
+        digitalWrite(PumpB, HIGH); delay(tambahB);
+        digitalWrite(PumpB, LOW);
+      }
+
 
     } else if (ppm < 900) {
-      tambahA = (Out_pumpA * 1000) * 2;
-      tambahB = (Out_pumpB * 1000) * 2;
-      digitalWrite(PumpA, HIGH); delay(tambahA);
-      digitalWrite(PumpA, LOW);delay(3000);
-      digitalWrite(PumpB, HIGH); delay(tambahB);
-      digitalWrite(PumpB, LOW);
+      for (int i = 0; i <= 1; i++) {
+        Serial.println("ppm <= 900");
+        tambahA = (Out_pumpA * 1000);
+        tambahB = (Out_pumpB * 1000);
+        digitalWrite(PumpA, HIGH); delay(tambahA);
+        digitalWrite(PumpA, LOW); delay(3000);
+        digitalWrite(PumpB, HIGH); delay(tambahB);
+        digitalWrite(PumpB, LOW);
+      }
+
 
     } else if (ppm < 1000) {
-      tambahA = (Out_pumpA * 1000);
-      tambahB = (Out_pumpB  * 1000);
-      digitalWrite(PumpA, HIGH); delay(tambahA);
-      digitalWrite(PumpA, LOW);delay(3000);
-      digitalWrite(PumpB, HIGH); delay(tambahB);
-      digitalWrite(PumpB, LOW);
+      for (int i = 0; i <= 0; i++) {
+        Serial.println("ppm <= 1000");
+        tambahA = (Out_pumpA * 1000);
+        tambahB = (Out_pumpB  * 1000);
+        digitalWrite(PumpA, HIGH); delay(tambahA);
+        digitalWrite(PumpA, LOW); delay(3000);
+        digitalWrite(PumpB, HIGH); delay(tambahB);
+        digitalWrite(PumpB, LOW);
+      }
     }
 
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("     [PPM :" + String(ppm) +"] ");
+    lcd.print("     [PPM :" + String(ppm) + "] ");
     lcd.setCursor(0, 1);
     lcd.print("CEK ULANG 5 MNT LAGI");
 
@@ -257,9 +271,9 @@ void tambahNutrisi() {
     // aturppm#780#1000#1000
 
     Serial3.println("aturppm#" +
-                  String(ppm) + "#" +
-                  String(tambahA) + "#" +
-                  String(tambahB));
+                    String(ppm) + "#" +
+                    String(tambahA) + "#" +
+                    String(tambahB));
 
   }
 
@@ -300,9 +314,9 @@ void cekAKTIF() {
   PHmeter = bacaPH();
   sensorT.requestTemperatures();
   S_Air   = sensorT.getTempCByIndex(0);
-  if (S_Air <= -200){
-      S_Air = 25;
-    }
+  if (S_Air <= -200) {
+    S_Air = 25;
+  }
   LUX     = S_cahaya.readLightLevel();
   humi    = dht.readHumidity();
   temp    = dht.readTemperature();
@@ -331,7 +345,7 @@ void cekAKTIF() {
                   String(stokA) + "#" +
                   String(stokB) + "#" +
                   String(stokPhdown));
-   delay(2000);
+  delay(2000);
 }
 
 

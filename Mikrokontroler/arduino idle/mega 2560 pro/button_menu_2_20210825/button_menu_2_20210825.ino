@@ -66,7 +66,7 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("   BETAPHONIK V1");
   delay(2000);
-  
+
   while (isnan(dht.readHumidity()) or isnan(dht.readTemperature())) {
     lcd.clear();
     lcd.setCursor(0, 1);
@@ -74,7 +74,7 @@ void setup() {
     delay(2000);
   }
 
-  cekAKTIF();  
+  cekAKTIF();
 
 }
 
@@ -152,21 +152,24 @@ void loop() {
     // baca ph
     PHmeter = bacaPH();
 
+    lcd.setCursor(0, 1);
+    lcd.print("     PH : " + String(PHmeter));
+
     //perbaikan PH
     if (PHmeter > phMax) {
       int pompaPHD;
 
       if (PHmeter >= 10) {
-        pompaPHD = (Out_pumpPhd * 1000) * 5;
+        pompaPHD = (Out_pumpPhd * 1000);
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 9.0) {
-        pompaPHD = (Out_pumpPhd * 1000) * 4;
+        pompaPHD = (Out_pumpPhd * 1000);
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 8.0) {
-        pompaPHD = (Out_pumpPhd * 1000) * 3;
+        pompaPHD = (Out_pumpPhd * 1000);
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 7.0) {
-        pompaPHD = (Out_pumpPhd * 1000) * 2   ;
+        pompaPHD = (Out_pumpPhd * 1000);
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 6.0) {
         pompaPHD = Out_pumpPhd * 1000;
@@ -191,18 +194,15 @@ void loop() {
 
     //perbaikan ppm
     if (ppm >= ppmMax) {
-
       ppmStatus = "Ganti%20Air%20Nutrisi";
-
-    } else if (ppm <= ppmMin && ppm >= 100 && S_Air <= 38 && W_cek1j == jamOn ) {
+    } else if (ppm <= ppmMin && ppm >= 50) {
+      lcd.setCursor(0, 2);
+      lcd.print("     PPM :" + String(ppm));
       tambahNutrisi();
       ppmStatus = "Penambahan%20Nutrisi";
-    } else if (ppm <= ppmMin && S_Air >= 38 ) {
-      ppmStatus = "Suhu%20Air%20Lebih%20Dari%2038%20C";
     } else {
       ppmStatus = "PPM%20AMAN";
     }
-
 
     //update stok nutrisi dan air.
     stokA   = hitungStok('A'); delay(100);
@@ -221,7 +221,7 @@ void loop() {
                     String(stokPhdown));
 
     delay(3000);
-    
+
     //update cahaya
     LUX = S_cahaya.readLightLevel();
     //update kelembapan udara
@@ -231,7 +231,7 @@ void loop() {
     //update suhu air
     sensorT.requestTemperatures();
     S_Air = sensorT.getTempCByIndex(0);
-    if (S_Air <= -200){
+    if (S_Air <= -200) {
       S_Air = 25;
     }
 
@@ -1778,10 +1778,10 @@ tespumpA:
   lcd.print("    " + String(Out_pumpA) + " Detik  ");
 
   digitalWrite(PumpA, HIGH);
-  delay(Out_pumpA*1000);
+  delay(Out_pumpA * 1000);
   digitalWrite(PumpA, LOW);
   lcd.clear();
-  
+
   goto pumpA;
 
 tespumpB:
@@ -1794,10 +1794,10 @@ tespumpB:
   lcd.print("    " + String(Out_pumpB) + " Detik  ");
 
   digitalWrite(PumpB, HIGH);
-  delay(Out_pumpB*1000);
+  delay(Out_pumpB * 1000);
   digitalWrite(PumpB, LOW);
   lcd.clear();
-  
+
   goto pumpB;
 
 
@@ -1811,10 +1811,10 @@ tespumpC:
   lcd.print("    " + String(Out_pumpPhd) + " Detik  ");
 
   digitalWrite(PumpPHdown, HIGH);
-  delay(Out_pumpPhd*1000);
+  delay(Out_pumpPhd * 1000);
   digitalWrite(PumpPHdown, LOW);
   lcd.clear();
-  
+
   goto pumpPHdown;
 
 
