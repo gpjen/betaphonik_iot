@@ -63,18 +63,19 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(TOK), pushTOK, FALLING);
   attachInterrupt(digitalPinToInterrupt(TN), pushTN, FALLING);
 
-  lcd.setCursor(0, 1);
-  lcd.print("   BETAPHONIK V1");
-  delay(2000);
-
   while (isnan(dht.readHumidity()) or isnan(dht.readTemperature())) {
-    lcd.clear();
-    lcd.setCursor(0, 1);
-    lcd.print("     CEK SENSOR    ");
+    lcd.setCursor(0, 0);
+    lcd.print("     CEK DHT22");
     delay(2000);
   }
 
   cekAKTIF();
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("   MEMULAI PROGRAM");
+  delay(2000);
+  lcd.clear();
 
 }
 
@@ -134,11 +135,35 @@ void loop() {
 
 
   //update sensor Permenit (cahaya, kelembapan, suhu udara, suhu air)
+  if (millis() - W_cek1m >= 60000) {
+
+    //update cahaya
+    LUX = S_cahaya.readLightLevel();
+    //update kelembapan udara
+    humi = dht.readHumidity();
+    //update suhu udara
+    temp = dht.readTemperature();
+    //update suhu air
+    sensorT.requestTemperatures();
+    S_Air = sensorT.getTempCByIndex(0);
+
+    tone(buzLed, 900, 100);
+    W_cek1m = millis();
+
+    Serial3.println("up1m#" +
+                    String(Jam) + "#" +
+                    String(S_Air) + "#" +
+                    String(LUX) + "#" +
+                    String(humi) + "#" +
+                    String(temp));
+  }
+
+
+
+
+
   //PH dan ppm setiap 1 jam
   if ( now.hour() == W_cek1j) {
-    tone(buzLed, 500, 300);
-    delay(300);
-    tone(buzLed, 900, 700);
 
     lcd.backlight();
 
@@ -152,24 +177,21 @@ void loop() {
     // baca ph
     PHmeter = bacaPH();
 
-    lcd.setCursor(0, 1);
-    lcd.print("     PH : " + String(PHmeter));
-
     //perbaikan PH
     if (PHmeter > phMax) {
       int pompaPHD;
 
       if (PHmeter >= 10) {
-        pompaPHD = (Out_pumpPhd * 1000);
+        pompaPHD = (Out_pumpPhd * 1000) * 5;
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 9.0) {
-        pompaPHD = (Out_pumpPhd * 1000);
+        pompaPHD = (Out_pumpPhd * 1000) * 4;
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 8.0) {
-        pompaPHD = (Out_pumpPhd * 1000);
+        pompaPHD = (Out_pumpPhd * 1000) * 3;
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 7.0) {
-        pompaPHD = (Out_pumpPhd * 1000);
+        pompaPHD = (Out_pumpPhd * 1000) * 2   ;
         pompaPHdown(pompaPHD);
       } else if (PHmeter >= 6.0) {
         pompaPHD = Out_pumpPhd * 1000;
@@ -194,22 +216,27 @@ void loop() {
 
     //perbaikan ppm
     if (ppm >= ppmMax) {
+
       ppmStatus = "Ganti%20Air%20Nutrisi";
-    } else if (ppm <= ppmMin && ppm >= 50) {
-      lcd.setCursor(0, 2);
-      lcd.print("     PPM :" + String(ppm));
+
+    } else if (ppm <= ppmMin && S_Air <= 38 ) {
       tambahNutrisi();
+
       ppmStatus = "Penambahan%20Nutrisi";
+
+    } else if (ppm <= ppmMin && S_Air >= 38 ) {
+      ppmStatus = "Suhu%20Air%20Lebih%20Dari%2038%20C";
     } else {
+
       ppmStatus = "PPM%20AMAN";
     }
+
 
     //update stok nutrisi dan air.
     stokA   = hitungStok('A'); delay(100);
     stokB   = hitungStok('B'); delay(100);
     stokPhdown = hitungStok('C'); delay(100);
 
-    tone(buzLed, 900, 100);
     Serial3.println("up1jam#" +
                     String(Jam) + "#" +
                     String(ppm) + "#" +
@@ -220,32 +247,11 @@ void loop() {
                     String(stokB) + "#" +
                     String(stokPhdown));
 
-    delay(3000);
-
-    //update cahaya
-    LUX = S_cahaya.readLightLevel();
-    //update kelembapan udara
-    humi = dht.readHumidity();
-    //update suhu udara
-    temp = dht.readTemperature();
-    //update suhu air
-    sensorT.requestTemperatures();
-    S_Air = sensorT.getTempCByIndex(0);
-    if (S_Air <= -200) {
-      S_Air = 25;
-    }
-
-    tone(buzLed, 900, 100);
-    Serial3.println("up1m#" +
-                    String(Jam) + "#" +
-                    String(S_Air) + "#" +
-                    String(LUX) + "#" +
-                    String(humi) + "#" +
-                    String(temp));
-
     W_cek1j = W_cek1j + 1;
     lampu = true;
   }
+
+
 
 
 
@@ -1778,10 +1784,10 @@ tespumpA:
   lcd.print("    " + String(Out_pumpA) + " Detik  ");
 
   digitalWrite(PumpA, HIGH);
-  delay(Out_pumpA * 1000);
+  delay(Out_pumpA*1000);
   digitalWrite(PumpA, LOW);
   lcd.clear();
-
+  
   goto pumpA;
 
 tespumpB:
@@ -1794,10 +1800,10 @@ tespumpB:
   lcd.print("    " + String(Out_pumpB) + " Detik  ");
 
   digitalWrite(PumpB, HIGH);
-  delay(Out_pumpB * 1000);
+  delay(Out_pumpB*1000);
   digitalWrite(PumpB, LOW);
   lcd.clear();
-
+  
   goto pumpB;
 
 
@@ -1811,10 +1817,10 @@ tespumpC:
   lcd.print("    " + String(Out_pumpPhd) + " Detik  ");
 
   digitalWrite(PumpPHdown, HIGH);
-  delay(Out_pumpPhd * 1000);
+  delay(Out_pumpPhd*1000);
   digitalWrite(PumpPHdown, LOW);
   lcd.clear();
-
+  
   goto pumpPHdown;
 
 

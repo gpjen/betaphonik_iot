@@ -34,15 +34,17 @@ void setup() {
 void loop() {
 
   WiFiClient client;
-
+  Serial.println(host);
+  Serial.println("/n");
   if (!client.connect(host, 80)) {
+    Serial.println("Koneksi Server Bermasalah");
+
     if (WiFi.status() != WL_CONNECTED) {
       Serial.println("wifi tidak tersambung");
       WiFiManager wifiManager;
       wifiManager.autoConnect("BETAPHONIK_IOT");
     }
-
-    Serial.println("Koneksi Server Bermasalah");
+    Serial.println("\n ==> Berhasil konek Wifi...\n");
     return;
   }
 

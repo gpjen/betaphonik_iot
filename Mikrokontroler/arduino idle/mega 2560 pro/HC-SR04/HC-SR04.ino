@@ -1,5 +1,5 @@
-#define E_Pin 10 //Echo Pin
-#define T_Pin 11 //Trigger Pin
+#define E_Pin D2 //Echo Pin
+#define T_Pin D1 //Trigger Pin
 
 long Durasi, Jarak; //waktu untuk kalkulasi jarak
 
